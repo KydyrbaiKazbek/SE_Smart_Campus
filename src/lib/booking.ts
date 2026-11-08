@@ -1,12 +1,15 @@
-import type { Room } from "@/types";
+import type { Booking } from "@/types";
 import { minutesToHHMM, MINUTES_PER_DAY } from "@/lib/timeUtils";
 
 const MAX_BOOKING_LENGTH = 120;
 
-export type BookingCheckInput = Pick<Room, "blocked" | "blockReason" | "bookings"> & {
+export type BookingCheckInput = {
   start: number;
   end: number;
   now: number;
+  blocked?: boolean;
+  blockReason?: string;
+  bookings: Array<Pick<Booking, "start" | "end" | "purpose" | "bookedBy"> & { id?: string }>;
 };
 
 /**

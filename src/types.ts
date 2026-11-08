@@ -11,6 +11,7 @@ export interface Room {
   name: string;
   building: string;
   capacity: number;
+  equipment: string[];
   blocked: boolean;
   blockReason?: string;
   bookings: Booking[];
@@ -21,4 +22,10 @@ export type CheckStatus = "available" | "unavailable";
 export interface CheckResult {
   status: CheckStatus;
   reasons: string[]; // empty when available; one or more rejection reasons when unavailable
+}
+
+export interface RoomFilterOptions {
+  minCapacity?: number;
+  equipment?: string[];
+  includeBlocked?: boolean;
 }
