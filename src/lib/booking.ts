@@ -1,4 +1,4 @@
-import type { Booking } from "@/types";
+import type { Booking, CheckResult } from "@/types";
 import { minutesToHHMM, MINUTES_PER_DAY } from "@/lib/timeUtils";
 
 const MAX_BOOKING_LENGTH = 120;
@@ -49,4 +49,15 @@ export function getBookingIssues(input: BookingCheckInput): string[] {
 
 export function canBook(input: BookingCheckInput): boolean {
   return getBookingIssues(input).length === 0;
+}
+
+/**
+ * Evaluates booking rules in a single pass and returns a structured CheckResult.
+ * Eliminates redundant evaluation of getBookingIssues.
+ */
+export function checkAvailability(input: BookingCheckInput): CheckResult {
+  const reasons = getBookingIssues(input);
+  return reasons.length === 0
+    ? { status: "available", reasons: [] }
+    : { status: "unavailable", reasons };
 }

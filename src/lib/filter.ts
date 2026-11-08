@@ -1,6 +1,15 @@
 import type { Room, RoomFilterOptions } from "@/types";
 
 /**
+ * Extracts all unique equipment items from a catalog of rooms, sorted alphabetically.
+ */
+export function getAvailableEquipment(rooms: Room[]): string[] {
+  const set = new Set<string>();
+  rooms.forEach((r) => r.equipment.forEach((eq) => set.add(eq)));
+  return Array.from(set).sort();
+}
+
+/**
  * Filters a catalog of rooms based on:
  * 1. Blocked status (blocked rooms are excluded by default)
  * 2. Capacity (room.capacity >= requestedAttendees)

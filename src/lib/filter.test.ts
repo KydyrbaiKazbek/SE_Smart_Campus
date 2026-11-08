@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { filterRooms } from "./filter";
+import { filterRooms, getAvailableEquipment } from "./filter";
 import type { Room } from "@/types";
 
 describe("Room Filtering Logic", () => {
@@ -51,7 +51,6 @@ describe("Room Filtering Logic", () => {
 
   it("filters rooms by capacity (capacity >= requested attendees)", () => {
     const result = filterRooms(testRooms, { minCapacity: 30 });
-    // r1 has capacity 10 (excluded); r3 is blocked (excluded); r2 (30) and r4 (40) match
     expect(result.map((r) => r.id)).toEqual(["r2", "r4"]);
   });
 
@@ -62,7 +61,6 @@ describe("Room Filtering Logic", () => {
 
   it("filters rooms by multiple equipment items (must contain ALL selected items)", () => {
     const result = filterRooms(testRooms, { equipment: ["Projector", "Whiteboard"] });
-    // r1 and r2 have both Projector and Whiteboard
     expect(result.map((r) => r.id)).toEqual(["r1", "r2"]);
   });
 
@@ -70,7 +68,6 @@ describe("Room Filtering Logic", () => {
     const result = filterRooms(testRooms, {
       equipment: ["Projector", "Whiteboard", "Sound System"],
     });
-    // None of the unblocked rooms have all three
     expect(result).toHaveLength(0);
   });
 
@@ -79,7 +76,6 @@ describe("Room Filtering Logic", () => {
       minCapacity: 25,
       equipment: ["Projector"],
     });
-    // r2 (capacity 30, Projector) and r4 (capacity 40, Projector) match
     expect(result.map((r) => r.id)).toEqual(["r2", "r4"]);
   });
 
@@ -96,5 +92,17 @@ describe("Room Filtering Logic", () => {
   it("can include blocked rooms if explicitly requested via includeBlocked: true", () => {
     const result = filterRooms(testRooms, { minCapacity: 50, includeBlocked: true });
     expect(result.map((r) => r.id)).toEqual(["r3"]);
+  });
+
+  it("getAvailableEquipment extracts unique, sorted equipment across all rooms", () => {
+    const equipment = getAvailableEquipment(testRooms);
+    expect(equipment).toEqual([
+      "Microphone",
+      "Projector",
+      "Sound System",
+      "TV Display",
+      "Video Conference",
+      "Whiteboard",
+    ]);
   });
 });

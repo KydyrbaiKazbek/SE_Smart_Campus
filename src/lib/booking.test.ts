@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { canBook, getBookingIssues } from './booking';
+import { canBook, getBookingIssues, checkAvailability } from './booking';
 
 describe('Booking Validation', () => {
   let defaultNow: number;
@@ -122,5 +122,18 @@ describe('Booking Validation', () => {
     const input = { start: 660, end: 720, now: defaultNow, blocked: true, blockReason: "Maintenance", bookings: defaultBookings };
     expect(canBook(input)).toBe(false);
     expect(getBookingIssues(input)).toContain("Maintenance");
+  });
+
+  it('T21: checkAvailability returns structured result with status and empty reasons on available', () => {
+    const input = { start: 660, end: 720, now: defaultNow, blocked: defaultBlocked, bookings: defaultBookings };
+    const res = checkAvailability(input);
+    expect(res).toEqual({ status: 'available', reasons: [] });
+  });
+
+  it('T22: checkAvailability returns structured result with status and reasons on unavailable', () => {
+    const input = { start: 630, end: 690, now: defaultNow, blocked: defaultBlocked, bookings: defaultBookings };
+    const res = checkAvailability(input);
+    expect(res.status).toBe('unavailable');
+    expect(res.reasons.length).toBeGreaterThan(0);
   });
 });

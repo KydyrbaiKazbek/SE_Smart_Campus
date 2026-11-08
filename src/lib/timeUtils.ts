@@ -1,5 +1,7 @@
 export const MINUTES_PER_DAY = 1440;
 
+export type TimeFormat = "24h" | "12h";
+
 /** Convert minutes-from-midnight to "HH:MM" (24-hour). */
 export function minutesToHHMM(minutes: number): string {
   const m = Math.round(minutes);
@@ -51,4 +53,7 @@ export function parse12h(input: string): number | null {
   return h * 60 + m;
 }
 
-export type TimeFormat = "24h" | "12h";
+/** Formats minutes from midnight into the specified time format (24h or 12h). */
+export function formatMinutes(minutes: number, format: TimeFormat = "24h"): string {
+  return format === "12h" ? minutesTo12h(minutes) : minutesToHHMM(minutes);
+}
